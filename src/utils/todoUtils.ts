@@ -122,9 +122,16 @@ export const shouldResetTasks = (lastResetDate: Date): boolean => {
 };
 
 export const resetDailyTodos = (todos: TodoItem[]): TodoItem[] => {
+  const today = getCurrentDay();
   return todos.map((todo) => ({
     ...todo,
     completionTier: CompletionTier.UNSELECTED,
+    history: [
+      ...todo.history.filter(
+        (entry) => entry.date.getTime() !== today.getTime()
+      ), // Remove today's entry if exists
+      { date: new Date(today), tier: CompletionTier.UNSELECTED }, // Add new entry for today
+    ],
   }));
 };
 
